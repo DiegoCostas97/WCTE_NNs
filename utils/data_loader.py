@@ -102,5 +102,26 @@ def edge_index(dat_id,
 
     return edges, edge_features, edge_weights
 
+def graph_Data():
 
+    # Normalization function so input node features values aren't extreme
+    def normalize(lst): return [i/np.max(lst) for i in lst]
 
+    edges, edge_features, edge_weights = edge_index(dat_id, event, num_neigh, directed, classic, all_connected, coord_names, torch_dtype)
+
+    # Node features normalized
+    charge      = event['digi_hit_charge'].values.astype(np.float32)
+    charge_norm = normalize(charge)
+    time        = event['digi_hit_time'].values.astype(np.float32)
+    time_norm   = normalize(time)
+
+    # Node features information that pass to PyTorch Geometric
+    nodes = torch.tensor(np.array([charge_norm, time_norm]).transpose())
+
+    # Nodes labels information that pass to PyTorch Geometric
+    label = torch.tensor(event[label_n].values)
+
+    # Create Graph
+    graph_data = Data(x=nodes, edge_index=edges, edge_attr=edge_features, edge_weight=edge_weights, y=label, num_nodes=len(nodes), dataset_id=dat_id, num_features=len(features_n))
+
+    return graph_data
