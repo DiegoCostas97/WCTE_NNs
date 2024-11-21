@@ -1,4 +1,4 @@
-# Some imports, not really important what they do
+# Some imports
 
 import pandas            as pd
 import matplotlib.pyplot as plt
@@ -7,6 +7,7 @@ import networkx          as nx
 
 import torch
 import sys
+import os
 
 # Import Diego's tools
 sys.path.append("/home/usc/ie/dcr/hk/ambe_analysis/paquetes")
@@ -17,23 +18,29 @@ from torch_geometric.data import Data, Dataset
 
 # Read .npz data
 # To produce this .npz from wcsim_output.root, use event_dump.py from DataTools
-npz = '/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSim/install/nicfVec_5kHzDR00-1350_7Th200ns-400+950.npz'
+# npz = '/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSim/install/nicfVec_5kHzDR00-1350_7Th200ns-400+950.npz'
 
 # Number of events simulated
-nevents = 30000
+# nevents = 30000
 
 # Creation of the DataFrame the DataLoader is reading the info from
-df_digiHits = df_digihits_info_to_df(npz, nevents)
+def createDataFrame(npz, nevents):
+    df = digihits_info_to_df(npz, nevents)
+
+    return df
 
 # Add label to the DigiHits, this is supervised learning!
-label = []
-for i in df_digiHits['digi_hit_truehit_parent_trackID']:
-    if -1 in i:
-        label.append(0)
-    else:
-        label.append(1)
+def addLabel(df):
+    label = []
+    for i in df['digi_hit_truehit_parent_trackID']:
+        if -1 in i:
+            label.append(0)
+        else:
+            label.append(1)
 
-df_digiHits['label'] = label
+    df['label'] = label
+
+    return df
 
 # Edges Tensors
 def edge_index(dat_id,
@@ -42,7 +49,7 @@ def edge_index(dat_id,
                directed        = False,
                classic         = False,
                fully_connected = False,
-               coords_names    = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
+               coord_names     = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
                torch_dtype     = torch.float):
 
     '''
@@ -106,11 +113,11 @@ def graph_Data(event,
                dat_id,
                num_neigh,
                features_n    = ['digi_hit_charge', 'digi_hit_time'],
-               label_n       = 'label'
+               label_n       = 'label',
                directed      = False,
                classic       = False,
                all_connected = True,
-               coords_names  = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
+               coord_names   = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
                torch_dtype   = torch.float):
 
     '''
@@ -157,10 +164,12 @@ class GraphDataset(Dataset):
     def num_features(self):
         return self._num_features
 
+    @property
     def num_classes(self):
         return self._num_classes
 
-def graphDataset(file          = npz,
+def graphDataset(file,
+                 df,
                  features_n    = ['digi_hit_charge', 'digi_hit_time'],
                  label_n       = 'label',
                  num_neigh     = 5,
@@ -175,17 +184,17 @@ def graphDataset(file          = npz,
     '''
 
     # Get the .npz file name
-    filename      = os.path.splitext(os.path.basename(npz))[0]
+    filename      = os.path.splitext(os.path.basename(file))[0]
     # Initialize the DataSet list
     dataset       = []
     # Get only those events with DigiHits
-    nonZeroEvents = df_digiHits.droupby('event_id').size().index.to_numpy()
+    nonZeroEvents = df.groupby('event_id').size().index.to_numpy()
 
     # Create the Graph for every event and append it to the dataset list
     for ev in nonZeroEvents:
-        event      = df_digiHits[df_digiHits['event_id'].values == ev]
+        event      = df[df['event_id'].values == ev]
         dat_id     = ev
-        graph_data = graphData(event,
+        graph_data = graph_Data(event,
                                dat_id,
                                num_neigh,
                                features_n    = features_n,
