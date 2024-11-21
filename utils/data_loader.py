@@ -39,11 +39,11 @@ df_digiHits['label'] = label
 def edge_index(dat_id,
                event,
                numm_neigh,
-               directed=False,
-               classic=False,
-               fully_connected=False,
-               coords_names = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
-               torch_dtype = torch.float):
+               directed        = False,
+               classic         = False,
+               fully_connected = False,
+               coords_names    = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
+               torch_dtype     = torch.float):
 
     '''
     The function uses KDTree algorithm to create edge tensors for the graphs.
@@ -102,7 +102,21 @@ def edge_index(dat_id,
 
     return edges, edge_features, edge_weights
 
-def graph_Data():
+def graph_Data(event,
+               dat_id,
+               num_neigh,
+               features_n    = ['digi_hit_charge', 'digi_hit_time'],
+               label_n       = 'label'
+               directed      = False,
+               classic       = False,
+               all_connected = True,
+               coords_names  = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
+               torch_dtype   = torch.float):
+
+    '''
+    Creates for an event the Data PyTorch geometric object with the edges, edge features (distances), edge weights (inverse of distance),
+    node features (digihit time and charge), label, number of nodes, and dataset ID.
+    '''
 
     # Normalization function so input node features values aren't extreme
     def normalize(lst): return [i/np.max(lst) for i in lst]
@@ -125,3 +139,67 @@ def graph_Data():
     graph_data = Data(x=nodes, edge_index=edges, edge_attr=edge_features, edge_weight=edge_weights, y=label, num_nodes=len(nodes), dataset_id=dat_id, num_features=len(features_n))
 
     return graph_data
+
+class GraphDataset(Dataset):
+    def __init__(self, graph_data_list, num_features, num_classes):
+        super(GraphDataset, self).__init__()
+        self.graph_data_list = graph_data_list
+        self._num_features   = num_features
+        self._num_classes    = num_classes
+
+    def len(self):
+        return len(self.graph_data_list)
+
+    def get(self, idx):
+        return self.graph_data_list[idx]
+
+    @property
+    def num_features(self):
+        return self._num_features
+
+    def num_classes(self):
+        return self._num_classes
+
+def graphDataset(file          = npz,
+                 features_n    = ['digi_hit_charge', 'digi_hit_time'],
+                 label_n       = 'label',
+                 num_neigh     = 5,
+                 num_classes   = 2,
+                 directed      = False,
+                 classic       = False,
+                 all_connected = True,
+                 coord_names   = ['digi_hit_x', 'digi_hit_y', 'digi_hit_z'],
+                 torch_dtype   = torch.float):
+    '''
+    For a file, it creates a dataset with all the events in their input in the GNN form
+    '''
+
+    # Get the .npz file name
+    filename      = os.path.splitext(os.path.basename(npz))[0]
+    # Initialize the DataSet list
+    dataset       = []
+    # Get only those events with DigiHits
+    nonZeroEvents = df_digiHits.droupby('event_id').size().index.to_numpy()
+
+    # Create the Graph for every event and append it to the dataset list
+    for ev in nonZeroEvents:
+        event      = df_digiHits[df_digiHits['event_id'].values == ev]
+        dat_id     = ev
+        graph_data = graphData(event,
+                               dat_id,
+                               num_neigh,
+                               features_n    = features_n,
+                               label_n       = label_n,
+                               directed      = directed,
+                               classic       = classic,
+                               all_connected = all_connected,
+                               coord_names   = coord_names,
+                               torch_dtype   = torch_dtype)
+
+        # In order to avoid fraphs where edges don't exist
+        # check if graph_data is not None before proceeding
+        if graph_data is not None and graph_data.edge_index is not None and graph_data.edge_index.numel() > 0:
+            graph_data.fnum = filename+f'_event{ev}'
+            dataset.append(graph_data)
+
+    return GraphDataset(graph_data_list=dataset, num_features=len(features_n), num_classes=num_classes)
