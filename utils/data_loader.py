@@ -16,13 +16,6 @@ from npz_to_df import digihits_info_to_df
 from scipy.spatial        import KDTree
 from torch_geometric.data import Data, Dataset
 
-# Read .npz data
-# To produce this .npz from wcsim_output.root, use event_dump.py from DataTools
-# npz = '/mnt/netapp2/Store_uni/home/usc/ie/dcr/software/hk/WCSim/install/nicfVec_5kHzDR00-1350_7Th200ns-400+950.npz'
-
-# Number of events simulated
-# nevents = 30000
-
 # Creation of the DataFrame the DataLoader is reading the info from
 def createDataFrame(npz, nevents):
     df = digihits_info_to_df(npz, nevents)
