@@ -2,6 +2,10 @@ from data_loader import createDataFrame
 from data_loader import addLabel
 from data_loader import graphDataset
 
+from plot_utils import visualize_graph
+
+import matplotlib.pyplot as plt
+
 import time
 
 
@@ -25,3 +29,8 @@ time.sleep(2)
 print("Transforming Data Into Graphs and Creating Graphs Dataset...")
 gnnDataset = graphDataset(file=npz, df=df, num_neigh=5, num_classes=2, directed=False, classic=True, all_connected=False)
 print("\nGraph Dataset Created!")
+
+# Plot one graph
+graph = gnnDataset[10]
+visualize_graph(graph, color=graph.y)
+plt.show()
