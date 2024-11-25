@@ -60,7 +60,7 @@ class GAT(torch.nn.Module):
         self.conv2 = GATConv(self.hid * self.in_head, 1, concat=False, heads=self.out_head, dropout=self.dropout_fc) # Binary Classification
 
     def forward(self, data):
-        x, edge_index = data.x, data.edge_index
+        x, edge_index = data.x, data.edge_index.long()
 
         x = F.dropout(x, p=self.dropout_gat, training=self.training)
         h = self.conv1(x, edge_index)
