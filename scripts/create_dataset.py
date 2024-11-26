@@ -21,7 +21,7 @@ if __name__ == "__main__":
     df = addLabel(df)
 
     gnnDataset = graphDataset(file          = params.npz,
-                              df            = params.df,
+                              df            = df,
                               num_neigh     = params.num_neigh,
                               num_classes   = params.num_classes,
                               directed      = params.directed,
