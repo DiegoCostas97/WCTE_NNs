@@ -2,3 +2,4 @@ __pycache__
 *.tar
 events.out.tfevents.*
 .ipynb_checkpoints
+*.pth
