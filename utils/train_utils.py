@@ -152,12 +152,11 @@ def save_checkpoint(state, filename='checkpioint.pth.tar'):
 
 def get_name_of_scheduler(scheduler):
     """
-    Get the name of the scheduler.
+    Get the name of the scheduler by matching its class name.
     """
-    for name, obj in lr_scheduler.__dict__.items():
-        if inspect.isclass(obj):
-            if isinstance(scheduler, obj):
-                return name
+    scheduler_name = scheduler.__class__.__name__  # Obtén el nombre de la clase
+    if scheduler_name in lr_scheduler.__dict__:   # Verifica si existe en el módulo
+        return scheduler_name
     return None
 
 def train_net(*,
