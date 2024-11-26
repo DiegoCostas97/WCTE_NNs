@@ -225,8 +225,8 @@ def train_net(*,
         learning_rate = optimizer.param_groups[0]['lr']
         writer.add_scalar('Learning Rate', learning_rate, i)
         print(f"Epoch {i+1}/{nepoch}, LR: {learning_rate:.6f}, Train Loss: {train_loss:.4f}, Valid Loss: {valid_loss:.4f}")
-        print(f"Train Metrics: {train_met}")
-        print(f"Valid Metrics: {valid_met}")
+        # print(f"Train Metrics: {train_met}")
+        # print(f"Valid Metrics: {valid_met}")
 
         writer.flush()
 
