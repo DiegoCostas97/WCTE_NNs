@@ -8,7 +8,7 @@ sys.path.append("/home/usc/ie/dcr/hk/ml/hit_ana_gnn/networks")
 
 from argparse import ArgumentParser, Namespace
 
-from train_utils      import train_net, predict_gen
+from train_utils   import train_net, predict_gen
 from architectures import GAT
 
 def is_file(parser, arg):

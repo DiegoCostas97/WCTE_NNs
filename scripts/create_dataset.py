@@ -1,11 +1,12 @@
 import torch
 import sys
 
-sys.path.append("/home/usc/ie/dcr/hk/ml/hit_ana_gnn")
+sys.path.append("/home/usc/ie/dcr/hk/ml/hit_ana_gnn/utils")
+sys.path.append("/home/usc/ie/dcr/hk/ml/hit_ana_gnn/scripts")
 
-from utils.data_loader import createDataFrame, addLabel, graphDataset
+from data_loader import createDataFrame, addLabel, graphDataset
 
-from scripts.main import is_file, get_params
+from main import is_file, get_params
 
 from argparse import ArgumentParser, Namespace
 
