@@ -14,5 +14,5 @@ We now can train the net using the `main.py` script and the training info and me
 4. Once the training is completed and tensorboard file created, you can open the web application doing: `tensorboard --logdir=.` from the directory where the tensorboard file is located.
 # To-Do
 - Add prediction to the `main.py` function.
-- Add a dedicated script that creates the graph dataset and stores it somewhere the net can read it from.
+- ~Add a dedicated script that creates the graph dataset and stores it somewhere the net can read it from.~
 - In general, improve performance of the net via several changes.
