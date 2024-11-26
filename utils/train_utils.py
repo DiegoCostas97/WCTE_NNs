@@ -154,8 +154,8 @@ def get_name_of_scheduler(scheduler):
     """
     Get the name of the scheduler by matching its class name.
     """
-    scheduler_name = scheduler.__class__.__name__  # Obtén el nombre de la clase
-    if scheduler_name in lr_scheduler.__dict__:   # Verifica si existe en el módulo
+    scheduler_name = scheduler.__class__.__name__  # Obtain the name of the class
+    if scheduler_name in lr_scheduler.__dict__:   # Verify if the module exists
         return scheduler_name
     return None
 
@@ -203,7 +203,7 @@ def train_net(*,
                 scheduler.step(valid_loss)
             # Other schdulers just reduce LR every some steps, but do not take into account loss
             else:
-                scheduler.step(valid_loss) # Fix this! get_name_of_scheduler is not working
+                scheduler.step()
 
         if valid_loss < start_loss:
             save_checkpoint({'state_dict': model.state_dict(),
