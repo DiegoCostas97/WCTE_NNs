@@ -10,6 +10,7 @@ from scripts.main import is_file, get_params
 from argparse import ArgumentParser, Namespace
 
 if __name__ == "__main__":
+    parser = ArgumentParser(description="Parameters for Dataset creation")
     parser.add_argument("-conf", dest="confname", required=True, help="Input file with parameters",
                         metavar="FILE", type=lambda x:is_file(parser, x))
 
