@@ -3,22 +3,23 @@
 This is a first attempt of coding, training and making predictions with a Graph Neural Network for separating Dark Noise (background) hits from Signal hits in WCTE. 
 
 # WCTE
-The Water Cherenkov Test Experiment consists in a cylindrical volume filled with water in which particles produce Cherenkov light, which is detected by the detectors in the walls the mPMTs, see [Figure 1](#fig1) and [Figure 2](#fig2)
+The Water Cherenkov Test Experiment consists in a cylindrical volume filled with water in which particles produce Cherenkov light, which is detected by the detectors in the walls the mPMTs, see [Figure 1](#fig1) and [Figure 2](#fig2).
+Every mPMT has 19 regular PMTs inside, and Cherenkov photons can hit one of those 19 PMTs and produce a signal (that we call hit) with a characteristic time, charge and position signature.
 
-<div style="display: flex; justify-content: center; align-items: center;">
-  <div style="text-align: center; margin: 10px;">
-    <a id="fig1"></a>
-    <img src="imgs/wcte.png" alt="The Water Cherenkov Test Experiment" width="300"/>
-    <p>Figure 1: The Water Cherenkov Test Experiment.</p>
-  </div>
-  <div style="text-align: center; margin: 10px;">
-    <a id="fig2"></a>
-    <img src="imgs/mpmt.png" alt="Close up of a mPMT." width="300"/>
-    <p>Figure 2: Close up of a mPMT.</p>
-  </div>
-</div>
-
-Every mPMT has 19 regular PMTs inside, and Cherenkov photons can hit one of those 19 PMTs and produce a signal (that we call hit) with a characteristic time, charge and position signature, 
+<table>
+  <tr>
+    <td style="text-align: center;">
+      <a id="fig1"></a>
+      <img src="imgs/wcte.png" alt="The Water Cherenkov Test Experiment" width="300"/><br>
+      <p>Figure 1: The Water Cherenkov Test Experiment.</p>
+    </td>
+    <td style="text-align: center;">
+      <a id="fig2"></a>
+      <img src="imgs/mpmt.png" alt="Close up of a mPMT." width="300"/><br>
+      <p>Figure 2: Close up of a mPMT.</p>
+    </td>
+  </tr>
+</table>
 
 The idea behind is that every event is represented as a graph, in which the nodes are the hits in the PMTs. Nodes have two main features, charge and time, and the edges are the physical distance between PMTs in the detector. This can be upgraded including more features to the nodes, or even adding weights to the edges.
 
