@@ -21,7 +21,24 @@ Every mPMT has 19 regular PMTs inside, and Cherenkov photons can hit one of thos
   </tr>
 </table>
 
-The idea behind is that every event is represented as a graph, in which the nodes are the hits in the PMTs. Nodes have two main features, charge and time, and the edges are the physical distance between PMTs in the detector. This can be upgraded including more features to the nodes, or even adding weights to the edges.
+When analyzing it, the data is split in what we call events, a selected time window in which what we want to study occurs, normally, a initial particle enters the detector volume and produces the light that produces the hits we see in the detectors, giving something like [Figure 3](#fig3). 
+
+However, not every hit that we record in each event is real signal, what we want to study, but spurious hits called background we want to get rid of. For this, we're trying to code a Graph Neural Network for segmentation, where every "pixel" is a "hit", and every "image" is an "event". For this, we're transforming every event into a graph, were every node is a hit and has two features (charge and time), and the edges feature is the physical distance between hits in the tank, see [Figure 4](#fig4).
+
+<table style="width: 100%; text-align: center;">
+  <tr>
+    <td style="width: 50%; padding: 10px;">
+      <a id="fig3"></a>
+      <img src="imgs/hits.png" alt="Signal of one event" width="300"/><br>
+      <p>Figure 3: Signal of one event, every dot represent a hit in a PMT.</p>
+    </td>
+    <td style="width: 50%; padding: 10px;">
+      <a id="fig4"></a>
+      <img src="imgs/grafo.png" alt="Graph created from hits information." width="300"/><br>
+      <p>Figure 4: Graph created from hits information (NOTE that this graph does NOT come from the plot in the left).</p>
+    </td>
+  </tr>
+</table>
 
 # Current Status
 We now can train the net using the `main.py` script and the training info and metrics are written to the Tensorboard logger. You need to change the parameters in the config file dedicated to the model you are using.
