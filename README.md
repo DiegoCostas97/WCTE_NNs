@@ -44,10 +44,20 @@ However, not every hit that we record in each event is real signal, what we want
 We now can train the net using the `main.py` script and the training info and metrics are written to the Tensorboard logger. You need to change the parameters in the config file dedicated to the model you are using.
 
 # How to
-1. At the moment, first you need to create a dataset for your data. You can do that running `python3 scripts/create_dataset.py -conf scripts/config_files/dataset_creation.conf` 
-2. Then you need to check `scripts/config_files/GAT.conf` and tune the parameters you want to use.
-3. Then run `main.py` doing: `python3 main.py -conf scripts/config_files/GAT.conf -a train`.
-4. Once the training is completed and tensorboard file created, you can open the web application doing: `tensorboard --logdir=.` from the directory where the tensorboard file is located.
+1. At the moment, first you need to create a dataset for your data. You can do that running
+   ```
+   python3 scripts/create_dataset.py -conf scripts/config_files/dataset_creation.conf
+   ``` 
+3. Then you need to check `scripts/config_files/GAT.conf` and tune the parameters you want to use.
+4. Then run `main.py` doing
+   ```
+   python3 main.py -conf scripts/config_files/GAT.conf -a train
+   ```
+6. Once the training is completed and tensorboard file created, you can open the web application doing:
+   ```
+   tensorboard --logdir=.
+   ```
+   from the directory where the tensorboard file is located.
 
 # To-Do
 - Add prediction to the `main.py` function.
