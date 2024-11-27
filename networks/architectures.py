@@ -67,8 +67,7 @@ class GAT(torch.nn.Module):
         h = F.elu(h)
 
         h = F.dropout(h, p=self.dropout_gat, training=self.training)
-        h = self.conv2(h, edge_index)
-        h = F.elu(h)
+        h = self.conv2(h, edge_index) # No need for activation function since we're using BCEWithLogitsLoss
 
         out = h
 
